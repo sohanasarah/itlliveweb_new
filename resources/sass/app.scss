@@ -5,10 +5,19 @@
 // Variables
 @import 'variables';
 
+@import '~admin-lte/dist/css/adminlte.css';
+
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-@import '~admin-lte/dist/css/adminlte.css';
+//Font Awesome
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '~@fortawesome/fontawesome-free/scss/regular.scss';
+@import '~@fortawesome/fontawesome-free/scss/solid.scss';
+@import '~@fortawesome/fontawesome-free/scss/brands.scss';
+
+// Chart JS
+@import '~admin-lte/plugins/chart.js/Chart.min.css';
 
 .navbar-laravel {
   background-color: #fff;
