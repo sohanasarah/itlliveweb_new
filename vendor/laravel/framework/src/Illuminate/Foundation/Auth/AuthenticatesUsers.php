@@ -118,7 +118,13 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        //
+        // TO STORE DATA IN SESSION
+        session([
+            'user_name' => $user->user_name,
+            'user_role' => $user->user_role,
+            'user_fullname' => $user->user_fullname,
+        ]);
+    
     }
 
     /**

@@ -10,9 +10,15 @@ window._ = require('lodash');
 try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
+
     require('bootstrap');
     require('admin-lte');
-} catch (e) { }
+    require('admin-lte/plugins/datatables/jquery.dataTables.js');
+    require('admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js');
+    require('admin-lte/plugins/sweetalert2/sweetalert2.min.js');
+} catch (e) {
+
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

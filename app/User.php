@@ -30,9 +30,19 @@ class User extends Authenticatable
         'user_pass', 'remember_token',
     ];
     
-     public function getAuthPassword()
+    public function getAuthPassword()
     {
-      return $this->user_pass;
+        return bcrypt($this->user_pass);
     }
 
+    /**
+     * Overrides the method to ignore the remember token.
+     */
+    public function setAttribute($key, $value)
+    {
+        $isRememberTokenAttribute = $key == $this->getRememberTokenName();
+        if (!$isRememberTokenAttribute) {
+            parent::setAttribute($key, $value);
+        }
+    }
 }
