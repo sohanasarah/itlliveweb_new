@@ -17,7 +17,7 @@
 
 <p align="center">
   <a href="https://github.com/sweetalert2/sweetalert2/actions"><img alt="Build Status" src="https://github.com/sweetalert2/sweetalert2/workflows/build/badge.svg"></a>
-  <a href="https://coveralls.io/github/sweetalert2/sweetalert2?branch=master"><img src="https://coveralls.io/repos/github/sweetalert2/sweetalert2/badge.svg?branch=master&" alt="Coverage Status"></a>
+  <a href="https://codeclimate.com/github/sweetalert2/sweetalert2/test_coverage"><img alt="Coverage Status" src="https://api.codeclimate.com/v1/badges/eba34bb80477933854d4/test_coverage"></a>
   <a href="https://www.npmjs.com/package/sweetalert2"><img alt="Version" src="https://img.shields.io/npm/v/sweetalert2.svg"></a>
   <a href="https://www.jsdelivr.com/package/npm/sweetalert2"><img alt="jsdelivr" src="https://data.jsdelivr.com/v1/package/npm/sweetalert2/badge?style=rounded"></a>
   <a href="#support-and-donations"><img alt="Support Donate" src="https://ionicabizau.github.io/badges/paypal.svg"></a>
@@ -228,13 +228,17 @@ Sponsors
 
 [<img src="https://sweetalert2.github.io/images/sponsors/flowcrypt-banner.png">](https://flowcrypt.com/?utm_source=sweetalert2&utm_medium=banner)
 
-[<img src="https://sweetalert2.github.io/images/plus.png" width="80">](DONATIONS.md) | [<img src="https://avatars2.githubusercontent.com/u/28631236?s=80&v=4" width="80">](https://flowcrypt.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/sex-toy-education.png" width="80">](https://sextoyeducation.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/PriceListo.png" width="80">](https://www.pricelisto.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/loveloxy.png" width="80">](https://loveloxy.com/?utm_source=sweetalert2&utm_medium=logo)
--|-|-|-|-
-[Become a sponsor](DONATIONS.md) | [FlowCrypt](https://flowcrypt.com/?utm_source=sweetalert2&utm_medium=logo) | [STED (NSFW 18+)](https://sextoyeducation.com/?utm_source=sweetalert2&utm_medium=logo) | [PriceListo](https://www.pricelisto.com/?utm_source=sweetalert2&utm_medium=logo) | [LoveLoxy (NSFW 18+)](https://www.loveloxy.com/?utm_source=sweetalert2&utm_medium=logo)
-
-<img src="https://sweetalert2.github.io/images/sponsors/sebaebc.png" width="80"> | [<img src="https://sweetalert2.github.io/images/sponsors/bingato.png" width="80">](https://bingato.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/ndchost.png" width="80">](https://www.ndchost.com/?utm_source=sweetalert2&utm_medium=logo) | [![](https://avatars0.githubusercontent.com/u/5826089?v=4&s=80)](https://sheetjs.com/?utm_source=sweetalert2&utm_medium=logo) | [![](https://avatars2.githubusercontent.com/u/12075795?v=4&s=80)](https://www.unique-p.ch/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/sextoycollective.jpg" width="80">](https://sextoycollective.com/?utm_source=sweetalert2&utm_medium=logo)
+[<img src="https://sweetalert2.github.io/images/plus.png" width="80">](SPONSORS.md) | [<img src="https://avatars2.githubusercontent.com/u/28631236?s=80&v=4" width="80">](https://flowcrypt.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/sexualalpha.jpg" width="80">](https://sexualalpha.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/sex-toy-education.png" width="80">](https://sextoyeducation.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/PriceListo.png" width="80">](https://www.pricelisto.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/loveloxy.png" width="80">](https://loveloxy.com/?utm_source=sweetalert2&utm_medium=logo)
 -|-|-|-|-|-
-SebaEBC | [Bingato (NSFW 18+)](https://www.bingato.com/?utm_source=sweetalert2&utm_medium=logo) | [NDCHost](https://www.ndchost.com/?utm_source=sweetalert2&utm_medium=logo) | [SheetJS LLC](https://sheetjs.com/?utm_source=sweetalert2&utm_medium=logo) | [Unique-P GmbH](https://www.unique-p.ch/?utm_source=sweetalert2&utm_medium=logo) | [STC (NSFW 18+)](https://sextoycollective.com/?utm_source=sweetalert2&utm_medium=logo)
+[Become a sponsor](SPONSORS.md) | [FlowCrypt](https://flowcrypt.com/?utm_source=sweetalert2&utm_medium=logo) | [SexualAlpha (NSFW)](https://sexualalpha.com/?utm_source=sweetalert2&utm_medium=logo) | [STED (NSFW)](https://sextoyeducation.com/?utm_source=sweetalert2&utm_medium=logo) | [PriceListo](https://www.pricelisto.com/?utm_source=sweetalert2&utm_medium=logo) | [LoveLoxy (NSFW)](https://www.loveloxy.com/?utm_source=sweetalert2&utm_medium=logo)
+
+[<img src="https://sweetalert2.github.io/images/sponsors/bingato.png" width="80">](https://bingato.com/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/ndchost.png" width="80">](https://www.ndchost.com/?utm_source=sweetalert2&utm_medium=logo) | [![](https://avatars0.githubusercontent.com/u/5826089?v=4&s=80)](https://sheetjs.com/?utm_source=sweetalert2&utm_medium=logo) | [![](https://avatars2.githubusercontent.com/u/12075795?v=4&s=80)](https://www.unique-p.ch/?utm_source=sweetalert2&utm_medium=logo) | [<img src="https://sweetalert2.github.io/images/sponsors/sextoycollective.jpg" width="80">](https://sextoycollective.com/?utm_source=sweetalert2&utm_medium=logo)
+-|-|-|-|-
+[Bingato (NSFW 18+)](https://www.bingato.com/?utm_source=sweetalert2&utm_medium=logo) | [NDCHost](https://www.ndchost.com/?utm_source=sweetalert2&utm_medium=logo) | [SheetJS LLC](https://sheetjs.com/?utm_source=sweetalert2&utm_medium=logo) | [Unique-P GmbH](https://www.unique-p.ch/?utm_source=sweetalert2&utm_medium=logo) | [STC (NSFW)](https://sextoycollective.com/?utm_source=sweetalert2&utm_medium=logo)
+
+[<img src="https://sweetalert2.github.io/images/sponsors/yourdoll.jpg" width="80">](https://www.yourdoll.com/?utm_source=sweetalert2&utm_medium=logo) | <img src="https://sweetalert2.github.io/images/sponsors/sebaebc.png" width="80">
+-|-
+[YourDoll (NSFW)](https://www.yourdoll.com/?utm_source=sweetalert2&utm_medium=logo) | SebaEBC
 
 Support and Donations
 ---------------------

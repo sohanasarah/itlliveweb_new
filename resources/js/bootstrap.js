@@ -16,6 +16,7 @@ try {
     require('admin-lte/plugins/datatables/jquery.dataTables.js');
     require('admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js');
     require('admin-lte/plugins/sweetalert2/sweetalert2.min.js');
+    require('admin-lte/plugins/daterangepicker/daterangepicker.js');
 } catch (e) {
 
 }

@@ -1,5 +1,5 @@
 /*!
-* sweetalert2 v9.5.4
+* sweetalert2 v9.6.0
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -1488,6 +1488,8 @@ var restoreActiveElement = function restoreActiveElement() {
       resolve();
     }, RESTORE_FOCUS_TIMEOUT); // issues/900
 
+    /* istanbul ignore if */
+
     if (typeof x !== 'undefined' && typeof y !== 'undefined') {
       // IE doesn't have scrollX/scrollY support
       window.scrollTo(x, y);
@@ -1632,7 +1634,7 @@ var defaultParams = {
   onAfterClose: undefined,
   scrollbarPadding: true
 };
-var updatableParams = ['title', 'titleText', 'text', 'html', 'icon', 'customClass', 'showConfirmButton', 'showCancelButton', 'confirmButtonText', 'confirmButtonAriaLabel', 'confirmButtonColor', 'cancelButtonText', 'cancelButtonAriaLabel', 'cancelButtonColor', 'buttonsStyling', 'reverseButtons', 'imageUrl', 'imageWidth', 'imageHeight', 'imageAlt', 'progressSteps', 'currentProgressStep'];
+var updatableParams = ['title', 'titleText', 'text', 'html', 'icon', 'customClass', 'allowOutsideClick', 'allowEscapeKey', 'showConfirmButton', 'showCancelButton', 'confirmButtonText', 'confirmButtonAriaLabel', 'confirmButtonColor', 'cancelButtonText', 'cancelButtonAriaLabel', 'cancelButtonColor', 'buttonsStyling', 'reverseButtons', 'imageUrl', 'imageWidth', 'imageHeight', 'imageAlt', 'progressSteps', 'currentProgressStep'];
 var deprecatedParams = {
   animation: 'showClass" and "hideClass'
 };
@@ -1801,8 +1803,7 @@ var undoScrollbar = function undoScrollbar() {
   }
 };
 
-/* istanbul ignore next */
-
+/* istanbul ignore file */
 var iOSfix = function iOSfix() {
   var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream || navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
 
@@ -1813,7 +1814,6 @@ var iOSfix = function iOSfix() {
     lockBodyScroll();
   }
 };
-/* istanbul ignore next */
 
 var lockBodyScroll = function lockBodyScroll() {
   // #1246
@@ -1832,8 +1832,6 @@ var lockBodyScroll = function lockBodyScroll() {
     }
   };
 };
-/* istanbul ignore next */
-
 
 var undoIOSfix = function undoIOSfix() {
   if (hasClass(document.body, swalClasses.iosfix)) {
@@ -1844,11 +1842,10 @@ var undoIOSfix = function undoIOSfix() {
   }
 };
 
+/* istanbul ignore file */
 var isIE11 = function isIE11() {
   return !!window.MSInputMethodContext && !!document.documentMode;
 }; // Fix IE11 centering sweetalert2/issues/933
-
-/* istanbul ignore next */
 
 
 var fixVerticalPositionIE = function fixVerticalPositionIE() {
@@ -1860,8 +1857,6 @@ var fixVerticalPositionIE = function fixVerticalPositionIE() {
     container.style.alignItems = 'flex-start';
   }
 };
-/* istanbul ignore next */
-
 
 var IEfix = function IEfix() {
   if (typeof window !== 'undefined' && isIE11()) {
@@ -1869,8 +1864,6 @@ var IEfix = function IEfix() {
     window.addEventListener('resize', fixVerticalPositionIE);
   }
 };
-/* istanbul ignore next */
-
 var undoIEfix = function undoIEfix() {
   if (typeof window !== 'undefined' && isIE11()) {
     window.removeEventListener('resize', fixVerticalPositionIE);
@@ -2545,7 +2538,7 @@ var addKeydownHandler = function addKeydownHandler(instance, globalState, innerP
 
   if (!innerParams.toast) {
     globalState.keydownHandler = function (e) {
-      return keydownHandler(instance, e, innerParams, dismissWith);
+      return keydownHandler(instance, e, dismissWith);
     };
 
     globalState.keydownTarget = innerParams.keydownListenerCapture ? window : getPopup();
@@ -2580,7 +2573,9 @@ var arrowKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Left', 'Rig
 var escKeys = ['Escape', 'Esc' // IE11
 ];
 
-var keydownHandler = function keydownHandler(instance, e, innerParams, dismissWith) {
+var keydownHandler = function keydownHandler(instance, e, dismissWith) {
+  var innerParams = privateProps.innerParams.get(instance);
+
   if (innerParams.stopKeydownPropagation) {
     e.stopPropagation();
   } // ENTER
@@ -2655,22 +2650,26 @@ var handleEsc = function handleEsc(e, innerParams, dismissWith) {
   }
 };
 
-var handlePopupClick = function handlePopupClick(domCache, innerParams, dismissWith) {
+var handlePopupClick = function handlePopupClick(instance, domCache, dismissWith) {
+  var innerParams = privateProps.innerParams.get(instance);
+
   if (innerParams.toast) {
-    handleToastClick(domCache, innerParams, dismissWith);
+    handleToastClick(instance, domCache, dismissWith);
   } else {
     // Ignore click events that had mousedown on the popup but mouseup on the container
     // This can happen when the user drags a slider
     handleModalMousedown(domCache); // Ignore click events that had mousedown on the container but mouseup on the popup
 
     handleContainerMousedown(domCache);
-    handleModalClick(domCache, innerParams, dismissWith);
+    handleModalClick(instance, domCache, dismissWith);
   }
 };
 
-var handleToastClick = function handleToastClick(domCache, innerParams, dismissWith) {
+var handleToastClick = function handleToastClick(instance, domCache, dismissWith) {
   // Closing toast by internal click
   domCache.popup.onclick = function () {
+    var innerParams = privateProps.innerParams.get(instance);
+
     if (innerParams.showConfirmButton || innerParams.showCancelButton || innerParams.showCloseButton || innerParams.input) {
       return;
     }
@@ -2706,8 +2705,10 @@ var handleContainerMousedown = function handleContainerMousedown(domCache) {
   };
 };
 
-var handleModalClick = function handleModalClick(domCache, innerParams, dismissWith) {
+var handleModalClick = function handleModalClick(instance, domCache, dismissWith) {
   domCache.container.onclick = function (e) {
+    var innerParams = privateProps.innerParams.get(instance);
+
     if (ignoreOutsideClick) {
       ignoreOutsideClick = false;
       return;
@@ -2795,7 +2796,7 @@ var swalPromise = function swalPromise(instance, domCache, innerParams) {
       return dismissWith(DismissReason.close);
     };
 
-    handlePopupClick(domCache, innerParams, dismissWith);
+    handlePopupClick(instance, domCache, dismissWith);
     addKeydownHandler(instance, globalState, innerParams, dismissWith);
 
     if (innerParams.toast && (innerParams.input || innerParams.footer || innerParams.showCloseButton)) {
@@ -2995,7 +2996,7 @@ Object.keys(instanceMethods).forEach(function (key) {
   };
 });
 SweetAlert.DismissReason = DismissReason;
-SweetAlert.version = '9.5.4';
+SweetAlert.version = '9.6.0';
 
 var Swal = SweetAlert;
 Swal["default"] = Swal;

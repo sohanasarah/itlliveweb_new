@@ -60,10 +60,10 @@ STN Screen
                             @php
                             $user = \Auth::user()->user_name;
 
-                            $site = Helper::get_site_desc($indd->indd_shipfrom);
+                            $site = get_site_desc($indd->indd_shipfrom);
                             $shipfrom_desc = $site->si_desc;
 
-                            $avail_lot = Helper::get_lot($indd->indd_part, $user);
+                            $avail_lot = get_lot($indd->indd_part, $user);
 
                             $qty_open = $indd->qty_pc - $indd->qty_ship;
 

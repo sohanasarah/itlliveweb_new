@@ -33,7 +33,8 @@ Pending Shipments
                         <div class="card-body">
                             <input type="hidden" name="txt_depot" value="{{app('request')->get('depot')}}">
 
-                            <p><i><b>Please Select An Indent To Allocate First. Only Allocated Indents Can Be Shipped.</b></i></p>
+                            <p><i><b>Please Select An Indent To Allocate First. Only Allocated Indents Can Be
+                                        Shipped.</b></i></p>
 
                             <div class="form-group row">
                                 <div class="col-md-12 col-lg-12">
@@ -66,7 +67,8 @@ Pending Shipments
                                                 @endphp
                                                 <tr>
                                                     <td>
-                                                        <a href="{{route('view-indent', ['ind_nbr'=>$indent->ind_nbr])}}">{{ $indent->ind_nbr }}</a>
+                                                        <a
+                                                            href="{{route('view-indent', ['ind_nbr'=>$indent->ind_nbr])}}">{{ $indent->ind_nbr }}</a>
                                                     </td>
                                                     <td>{{ $indent->ind_date }}</td>
                                                     <td>{{ $indent->ind_req_date }}</td>
@@ -76,13 +78,25 @@ Pending Shipments
                                                     <td>{{ $indent->items }}</td>
                                                     <td>{{ number_format($indent->qty_pc) }}</td>
                                                     <td>{{ number_format($indent->qty_ship) }}</td>
-                                                    <td class="status" id="status">{{ucfirst(strtolower($indent->ind_status))}}</td>
+                                                    <td class="status" id="status">
+                                                        {{ucfirst(strtolower($indent->ind_status))}}
+                                                    </td>
+                                                    @if ($indent->ind_shipfrom == Auth::user()->user_name)
                                                     <td>
-                                                        <button type="button" onclick="location.href='{{route('allocate', ['ind_nbr'=>$indent->ind_nbr])}}'" class="btn btn-info btn-allocate">Allocate</button>
+                                                        <button type="button"
+                                                            onclick="location.href='{{route('allocate', ['ind_nbr'=>$indent->ind_nbr])}}'"
+                                                            class="btn btn-info btn-allocate">Allocate</button>
                                                     </td>
                                                     <td>
-                                                        <button type="button" onclick="location.href='{{route('stn', ['ind_nbr'=>$indent->ind_nbr, 'ind_status'=> $indent->ind_status]) }}'" class="btn btn-success btn-stn" >STN</button>
+                                                        <button type="button"
+                                                            onclick="location.href='{{route('stn', ['ind_nbr'=>$indent->ind_nbr, 'ind_status'=> $indent->ind_status]) }}'"
+                                                            class="btn btn-success btn-stn">STN</button>
                                                     </td>
+                                                    @else
+                                                    <td></td>
+                                                    <td></td>
+                                                    @endif
+
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -108,10 +122,14 @@ Pending Shipments
 @section('page-script')
 <script>
     $(document).ready(function() {
-        var ind_status = "";
+        var status = '';
+        var ind_status = '';
 
         $('table tr').each(function(i) {
-            ind_status = $(this).find('.status').html();
+            status = $(this).find('.status').html();
+            ind_status = $.trim(status);
+            console.log(ind_status);
+
             if (ind_status === "Allocated") {
                 $(this).find('.btn-allocate').prop('disabled', true);
                 $(this).find('.btn-stn').prop('disabled', false);

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Division;
+namespace ITLLiveWeb\Http\Controllers\Division;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use ITLLiveWeb\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -186,6 +186,7 @@ class STNController extends Controller
 
             //IF DIVISION ALLOCATES TO DIFFERENT SOURCE
             // A new record in master table will be created. New indent number will be generated.
+            
             if ($shipfrom != $user) {
                 try {
                     //if multiple lines have same shipfrom site than only one header will be created.
@@ -208,9 +209,10 @@ class STNController extends Controller
                             ]);
 
                         $update_serial =  DB::table('si_mstr')
-                                            ->where('si_site', $shipto)
-                                            ->increment('si_ind_serial', 1);
+                                        ->where('si_site', $shipto)
+                                        ->increment('si_ind_serial', 1);
                     }
+
                     $new_line++;
                     $new_ind_line = sprintf('%02d', $new_line);
                     $new_req_nbr = $new_ind_nbr . $new_ind_line;
@@ -228,16 +230,21 @@ class STNController extends Controller
                                             'indd_allocated' => $date_created,
                                         ]);
 
+                    //finally commit all
+                    DB::commit();
+                       
                     $success_msg =  $success_msg. 'New Indent ' . $new_ind_nbr . ' Has Been Created!';
                 } catch (\Exception $e) {
+                    DB::rollback();
+
                     $line_error = true;
                     $line_error_msg = "Error in line# " . $line . $e->getMessage();
-                    //return response()->json(['msg'=>$line_error_msg]);
                 }
 
                 $previous_shipfrom = $shipfrom;
             }
             //IF DIVISION ALLOCATES TO ITSELF
+
             else {
                 try {
                     $update_line = DB::table('indd_det')
@@ -249,22 +256,27 @@ class STNController extends Controller
                                 'indd_status'  => 'ALLOCATED',
                                 'indd_allocated' => $date_created,
                             ]);
+
+                    //finally commit all
+                    DB::commit();
                 } catch (\Exception $e) {
+                    DB::rollback();
+
                     $line_error = true;
                     $line_error_msg = "Error in line# " . $line . $e->getMessage();
-                    //break;
-                    //return response()->json(['msg'=>$line_error_msg]);
                 }
             }
         }
         
-        if ($line_error == false) {
+        if ($line_error == true) {
+            return response()->json(['msg'=> $line_error_msg]);
+        } else {
             try {
                 $update_mstr =  DB::table('ind_mstr')
                             ->where('ind_nbr', $ind_nbr)
                             ->update([
-                                'ind_status'  => 'ALLOCATED',
-                                'ind_allocated' => $date_created,
+                                'ind_status'     => 'ALLOCATED',
+                                'ind_allocated'  => $date_created,
                                 'ind_cancelable' => 'false'
                             ]);
 
@@ -289,12 +301,11 @@ class STNController extends Controller
                 //return response as json data
                 return response()->json(['msg'=>'Indent ' . $ind_nbr . ' Has Been Allocated!!'.$success_msg]);
             } catch (\Exception $e) {
-                $error_msg = "Error " . $e->getMessage();
+                DB::rollback();
 
+                $error_msg = "Error " . $e->getMessage();
                 return response()->json(['msg'=> $error_msg]);
             }
-        } else {
-            return response()->json(['msg'=> $line_error_msg]);
         }
     }
 
@@ -351,18 +362,271 @@ class STNController extends Controller
 
     public function stn_confirm(Request $request)
     {
-        // $ind_nbr        = $request->post('ind_nbr');
-        // $prod_line      = $request->post('prod_line');
-        // $shipto         = $request->post('ship_to');
+        $post_data = $request->all();
 
-        // $ind_id_array   = $request->post('ind_id');
-        // $qty_ship_array = $request->post('qty_ship');
-        // $shipfrom_array = $request->post('ship_from');
-        // $lot_array      = $request->post('lot');
-        //dd($request->all());
-        return view('modules.division.stn.confirm-stn-screen')->with('postData', $request->all());
+        $transports = DB::table('code_mstr')
+                ->select(
+                    DB::raw('*')
+                )
+                ->where('code_fldname', 'transport_code')
+                ->get();
+
+        $do_nbr = $this->get_do_serial($request->post('ship_to'));
+
+        return view('modules.division.stn.confirm-stn-screen')
+                ->with('postData', $post_data)
+                ->with('transports', $transports)
+                ->with('doNbr', $do_nbr);
     }
-    
+
+    public function get_do_serial($site)
+    {
+        $do_nbr = "";
+        $sel_serial = DB::table('si_mstr')
+                ->select(
+                    DB::raw('si_do_serial')
+                )
+                ->where('si_site', $site)
+                ->first();
+
+        if ($sel_serial) {
+            $code_serial = $sel_serial->si_do_serial;
+            $serial = sprintf('%04d', $code_serial);
+            $do_nbr = "D" . substr($site, 2, 3) . $serial;
+        } else {
+            $do_nbr = null;
+        }
+        return $do_nbr;
+    }
+
+    public function stn_save(Request $request)
+    {
+        $ind_nbr        = $request->post('ind_nbr');
+        $prod_line      = $request->post('prod_line');
+        $shipfrom       = $request->post('shipfrom');
+        $shipto         = $request->post('shipto');
+        $transport_loc  = $request->post('transporter');
+        $truck_no       = $request->post('truck_no');
+        $vat_challan    = $request->post('vat_challan');
+
+        $shipdate       = Carbon::now()->toDateString();
+        $date_created   = Carbon::now()->toDateTimeString();
+        $user           = Auth::user()->user_name;
+
+        /*****array input*****/
+        $ind_id_array   = $request->post('ind_id');
+        $item_array     = $request->post('item');
+        $lot_array      = $request->post('lot');
+        $qty_ship_array = $request->post('qty_ship');
+
+        $msg = '';
+        $line = 0;
+        $line_error = false;
+        $line_error_msg = '';
+        $error = false;
+        $error_msg = '';
+
+        if (empty($shipfrom)) {
+            $error = true;
+            $error_msg = $error_msg . 'Invalid Ship From Site! ';
+        }
+
+        if (empty($shipto)) {
+            $error = true;
+            $error_msg = $error_msg . 'Invalid Ship To Site! ';
+        }
+
+        if (empty($qty_ship_array)) {
+            $error = true;
+            $error_msg = $error_msg . 'No Qty Given! ';
+        }
+
+        if (empty($item_array)) {
+            $error = true;
+            $error_msg = $error_msg . 'No Item Selected! ';
+        }
+
+        if (empty($lot_array)) {
+            $error = true;
+            $error_msg = $error_msg . 'No Lot Given! ';
+        }
+
+        if ($shipfrom != $user) {
+            $error = true;
+            $error_msg = $error_msg . 'Wrong Ship From Site! ';
+        }
+
+        if ($error == false) {
+            $transactions_ok = false;
+
+            DB::beginTransaction();
+
+            $do_nbr = $this->get_do_serial($shipto);
+
+            try {
+                $insert_header =  DB::table('ds_mstr')
+                            ->insert([
+                                'ds_donbr'      => $do_nbr,
+                                'ds_ind_nbr'    => $ind_nbr,
+                                'ds_prod_line'  => $prod_line,
+                                'ds_ship_date'  => $shipdate,
+                                'ds_ship_from'  => $shipfrom,
+                                'ds_ship_to'    => $shipto,
+                                'ds_transporter'=> $transport_loc,
+                                'ds_truck_no'   => $truck_no,
+                                'ds_vat_challan'=> $vat_challan,
+                                'ds_status'     => 'open'
+                            ]);
+
+                foreach ($ind_id_array as $index => $indd_id) {
+                    $line++;
+                    $item     = $item_array[$index];
+                    $lot      = $lot_array[$index];
+                    $qty_ship = $qty_ship_array[$index];
+
+                    $ind_details = $this->get_indent_details_by_id($indd_id);
+                    $indd_nbr = $ind_details->indd_nbr;
+                    $req_nbr  = $ind_details->indd_req_nbr;
+                    $ind_qty  = $ind_details->indd_qty_req;
+                    $open_qty = $ind_details->indd_qty_req - $ind_details->indd_qty_ship;
+                    if ($qty_ship != 0) {
+                        try {
+                            $insert_line = DB::table('dsd_det')
+                            ->insert([
+                                'dsd_donbr'    => $do_nbr,
+                                'dsd_req_nbr'  => $req_nbr,
+                                'dsd_part'     => $item,
+                                'dsd_lot'      => $lot,
+                                'dsd_qty_ship' => $qty_ship,
+                                'dsd_date_ship'=> $shipdate,
+                                'dsd_created'  => $date_created,
+                                'dsd_posted'   => 'false',
+                            ]);
+                        
+                            if ($insert_line) {
+                                $update_indent_line =  DB::table('indd_det')
+                                                ->where('indd_id', $indd_id)
+                                                ->update([
+                                                    'indd_qty_ship'  => $qty_ship,
+                                                    'indd_status'    => 'CLOSED'
+                                                ]);
+
+                                $location    = $this->get_location($shipfrom);
+                                $reference   = $req_nbr;
+                                $tr_qty_chg  = $qty_ship * (-1);
+                                $rct_git_qty = $qty_ship;
+
+                                //stock transaction
+                                $ISS_DO  = stock_transaction($do_nbr, $shipdate, "ISS-DO", $shipfrom, $location, $shipto, $shipfrom, $item, $lot, $tr_qty_chg, $reference, "Division STN", $user);
+                                $RCT_GIT = stock_transaction($do_nbr, $shipdate, "RCT-GIT", $shipto, $transport_loc, $shipfrom, $shipto, $item, $lot, $rct_git_qty, $reference, "Division STN", $user);
+                                
+                                if ($ISS_DO && $RCT_GIT) {
+                                    $transactions_ok = true;
+                                } else {
+                                    $transactions_ok = false;
+                                    $line_error = true;
+                                    $line_error_msg = "Error in line # " . $line . ". Error in updating tr_hist.". $e->getMessage();
+                                }
+                            } else {
+                                $line_error = true;
+                                $line_error_msg = "There was some error in query";
+                            }
+                        } catch (\Exception $e) {
+                            $line_error = true;
+                            $line_error_msg = "Error in line# " . $line . ". Error during posting transaction.".$e->getMessage();
+                        }
+                    }
+                }
+                /* end of foreach */
+            } catch (\Exception $e) {
+                $line_error = true;
+                $line_error_msg = "Error in inserting mstr. ".$e->getMessage();
+            }
+            /* end of mstr */
+
+            /******Commit or Rollback Block */
+            if ($line_error== false && $transactions_ok == true) {
+                
+                /***Update DO Serial in si_mstr */
+
+                $update_serial =  DB::table('si_mstr')
+                            ->where('si_site', $shipto)
+                            ->increment('si_do_serial', 1);
+
+                
+                /** Check Lines in indd_det. If all are closed then close the indent in ind_mstr */
+                
+                $total_line = 0;
+                $shipped_line = 0;
+
+                $check_lines =  DB::table('indd_det')
+                        ->select(
+                            DB::raw('indd_status')
+                        )
+                        ->where('indd_nbr', $ind_nbr)
+                        ->get();
+
+                foreach ($check_lines as $key => $value) {
+                    $total_line++;
+                    if ($value->indd_status == "CLOSED") {
+                        $shipped_line++;
+                    }
+                }
+
+                if ($total_line == $shipped_line) {
+                    $status_close = DB::table('ind_mstr')
+                            ->where('ind_nbr', $ind_nbr)
+                            ->update([
+                                'ind_status'  => 'CLOSED'
+                            ]);
+                }
+
+                /**********FINALLY COMMIT ALL QUERIES *****/
+                /******************************** */
+                DB::commit();
+
+                /****return success msg to view */
+
+                return response()->json(['alert'=>'success', 'msg'=>'New DO ' . $do_nbr . ' Has Been Created!!']);
+            } else {
+
+                /****else ROLLBACK */
+                DB::rollback();
+                return response()->json(['alert'=>'error','msg'=> $line_error_msg]);
+            }
+        } else {
+            return response()->json(['alert'=>'error', 'msg'=> $error_msg]);
+        }
+    }
+
+    public function get_indent_details_by_id($id)
+    {
+        $ind_details = DB::table('indd_det')
+                ->select(
+                    DB::raw('indd_id, indd_nbr, indd_line, indd_req_nbr, indd_part,
+                             indd_qty_req, indd_status, indd_shipfrom, indd_shipto, indd_qty_ship')
+                )
+                ->where('indd_id', $id)
+                ->first();
+        
+        return $ind_details;
+    }
+
+    public function get_location($site)
+    {
+        $get_location= DB::table('si_mstr')
+                    ->select('si_location')
+                    ->where('si_site', '=', $site)
+                    ->first();
+
+        if ($get_location) {
+            $location = $get_location->si_location;
+        } else {
+            $location = null;
+        }
+        return $location;
+    }
+
     public function view_indent(Request $request)
     {
         $ind_nbr = $request->route('ind_nbr'); //route id

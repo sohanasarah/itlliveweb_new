@@ -1,6 +1,7 @@
- <script>
-       /** add active class and stay opened when selected */
-      var url = window.location;
+<script>
+      /** add active class and stay opened when selected */
+      var url = window.location.href;
+      var urlParts = url.split('/');
 
       // for sidebar menu entirely but not cover treeview
       $('ul.nav-sidebar a').filter(function() {

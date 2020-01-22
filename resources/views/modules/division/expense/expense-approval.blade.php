@@ -42,7 +42,7 @@ Expense Approval
                                             @php
 
                                             $i++;
-                                            $prj_details = Helper::get_project_desc($depot_exp->exp_project);
+                                            $prj_details = get_project_desc($depot_exp->exp_project);
                                             if($prj_details){
                                             $prj_desc= $prj_details->prj_desc;
                                             }

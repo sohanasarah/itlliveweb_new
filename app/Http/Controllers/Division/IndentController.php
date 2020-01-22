@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Division;
+namespace ITLLiveWeb\Http\Controllers\Division;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use ITLLiveWeb\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -85,17 +85,15 @@ class IndentController extends Controller
         return view('modules.division.indent.confirm-indent')->with('post_data', $data);
     }
 
-    public function get_indent_number()
+    public function get_indent_number($user)
     {
         $msg = "";
-
         //$get_serial = DB::select('SELECT si_ind_prefix, si_ind_serial, si_division FROM si_mstr where si_site =?', [Auth::user()->user_name]);
-
         $get_serial =  DB::table('si_mstr')
                         ->select(
-                            DB::raw('si_ind_prefix, si_ind_serial, si_division ')
+                            DB::raw('si_ind_prefix, si_ind_serial, si_division')
                         )
-                        ->where('si_site', '=', Auth::user()->user_name)
+                        ->where('si_site', '=', $user)
                         ->first();
 
         if ($get_serial) {
@@ -103,22 +101,28 @@ class IndentController extends Controller
             $code_serial = $get_serial->si_ind_serial;
 
             if (!$prefix) {
-                return response()->json(['msg'=>"Prefix Is Not Set. Please Contact With MDM"]);
+                $msg = "Prefix Is Not Set. Please Contact With MDM";
+                $ind_nbr = null;
             }
             if (!$code_serial) {
-                return response()->json(['msg'=>"Code Serial Is Not Set. Please Contact With MDM"]);
+                $msg = "Code Serial Is Not Set. Please Contact With MDM";
+                $ind_nbr = null;
             } else {
+                $msg = '';
                 $serial = sprintf('%04d', $code_serial);
                 $ind_nbr = $prefix . $serial;
-                return $ind_nbr;
             }
         } else {
-            return null;
+            $msg = 'Query Error';
+            $ind_nbr = null;
         }
+
+        return compact('msg', 'ind_nbr');
     }
 
     public function save(Request $request)
     {
+        $user         = Auth::user()->user_name;
         $required_date= $request->post('txt_date');
         $prod_line    = $request->post('txt_prodline');
         $shipfrom     = $request->post('txt_shipfrom');
@@ -130,14 +134,36 @@ class IndentController extends Controller
         $date_created = Carbon::now()->toDateTimeString();
         $msg = '';
         $serial = 0;
+        $line_error = false;
+        $line_error_msg = '';
+        $error = false;
+        $error_msg = '';
 
-        $ind_nbr = $this->get_indent_number();
         
+        $ind_nbr_array = $this->get_indent_number($user);
+        $ind_nbr = $ind_nbr_array['ind_nbr'];
+        $ind_nbr_msg = $ind_nbr_array['msg'];
 
-        DB::beginTransaction();
+        if ($ind_nbr == '' || $ind_nbr == null) {
+            $error = true;
+            $error_msg  = $error_msg. $ind_nbr_msg;
+        }
+        if (empty($shipfrom)) {
+            $error = true;
+            $error_msg  = $error_msg. 'No source site Found! ';
+        }
+        if (empty($user)) {
+            $error = true;
+            $error_msg  = $error_msg.'Invalid User! ';
+        }
 
-        try {
-            $insert_header = DB::table('ind_mstr')
+        if ($error == false) {
+            $transactions_ok = false;
+
+            DB::beginTransaction();
+            
+            try {
+                $insert_header = DB::table('ind_mstr')
                             ->insert([
                                 'ind_nbr' => $ind_nbr,
                                 'ind_date' => $date,
@@ -150,14 +176,15 @@ class IndentController extends Controller
                                 'ind_status' => 'PENDING',
                             ]);
 
-            foreach ($qty_array as $index => $qty) {
-                $serial++;
-                $line = sprintf('%02d', $serial);
-                $req_nbr = $ind_nbr . $line;
-                $item = $item_array[$index];
-                $shipto = Auth::user()->user_name;
+                foreach ($qty_array as $index => $qty) {
+                    $serial++;
+                    $line = sprintf('%02d', $serial);
+                    $req_nbr = $ind_nbr . $line;
+                    $item = $item_array[$index];
+                    $shipto = Auth::user()->user_name;
 
-                $insert_line = DB::table('indd_det')
+                    try {
+                        $insert_line = DB::table('indd_det')
                             ->insert([
                                 'indd_nbr'     => $ind_nbr,
                                 'indd_line'    => $line,
@@ -170,17 +197,31 @@ class IndentController extends Controller
                                 'indd_created' => $date_created,
                                 
                             ]);
+                        $transactions_ok = true;
+                    } catch (\Exception $e) {
+                        $transactions_ok = false;
+                        $line_error = true;
+                        $line_error_msg = "Error in line# " . $line . ". Error during posting transaction.".$e->getMessage();
+                    }
+                }
+            } catch (\Exception $e) {
+                $line_error = true;
+                $line_error_msg = "Error in inserting mstr. ".$e->getMessage();
             }
 
-            $update_serial =  DB::table('si_mstr')
-                            ->where('si_site', Auth::user()->user_name )
+            if ($transactions_ok == true && $line_error == false) {
+                $update_serial =  DB::table('si_mstr')
+                            ->where('si_site', Auth::user()->user_name)
                             ->increment('si_ind_serial', 1);
-            DB::commit();
-            return response()->json(['msg'=>'Indent "' . $ind_nbr . '" Has Been Created']);
-            
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['msg'=>'Indent Not Posted. Please Try Again!. '. $e->getMessage()]);
+
+                DB::commit();
+                return response()->json(['msg'=>'Indent "' . $ind_nbr . '" Has Been Created']);
+            } else {
+                DB::rollback();
+                return response()->json(['msg'=>$line_error_msg]);
+            }
+        } else {
+            return response()->json(['alert'=>'error', 'msg'=> $error_msg]);
         }
     }
 }

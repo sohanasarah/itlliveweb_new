@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'ITLLiveWeb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,11 +169,11 @@ return [
         /*
          * Application Service Providers...
          */
-        App\Providers\AppServiceProvider::class,
-        App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
-        App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class,
+        ITLLiveWeb\Providers\AppServiceProvider::class,
+        ITLLiveWeb\Providers\AuthServiceProvider::class,
+        // ITLLiveWeb\Providers\BroadcastServiceProvider::class,
+        ITLLiveWeb\Providers\EventServiceProvider::class,
+        ITLLiveWeb\Providers\RouteServiceProvider::class,
 
     ],
 
@@ -223,7 +223,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Helper' => App\Helpers\Helpers::class
+        //'Helper' => App\Helpers\Helpers::class
 
     ],
 

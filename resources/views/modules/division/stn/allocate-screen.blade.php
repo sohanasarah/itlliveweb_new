@@ -54,7 +54,7 @@ Indent Allocate Screen
                             @foreach ($ind_details as $indd)
 
                             @php
-                            $site = Helper::get_site_desc($indd->indd_shipto);
+                            $site = get_site_desc($indd->indd_shipto);
                             $shipto_desc = $site->si_desc;
                             $i++;
                             @endphp

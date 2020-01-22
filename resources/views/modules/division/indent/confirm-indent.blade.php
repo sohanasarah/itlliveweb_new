@@ -147,21 +147,12 @@ Confirm Indent
                         }).then(function(){
                             window.location = '{{ route('home')}}';
                         });
-                        //location.reload();
-                        //window.location.href = "index.php?mod=reports&act=indent";
+
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        Swal.fire({
-                            popup: 'swal2-show',
-                            icon: 'error',
-                            title: textStatus + jqXHR.responseText,
-                            showConfirmButton: true,
-                            closeOnConfirm: true,
-                        }).then(function(){
-                            window.location.reload();
-                        });
-                        //alert(textStatus + jqXHR.responseText);
-                        //location.reload();
+                        console.log(jqXHR.responseText);
+                        alert(textStatus + jqXHR.responseText);
+                        location.reload();
                     }
     
                 });

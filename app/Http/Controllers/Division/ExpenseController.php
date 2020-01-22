@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\division;
+namespace ITLLiveWeb\Http\Controllers\division;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use ITLLiveWeb\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -58,13 +58,11 @@ class ExpenseController extends Controller
                         ]);
             }
             DB::commit();
-            //$msg = 'Status Has Been Updated';
-            return response()->json(['msg'=>'Status Has Been Updated']);
+            $msg = 'Status Has Been Updated';
+            return response()->json(['msg'=>$msg]);
         } catch (\Exception $e) {
             DB::rollback();
-            //$msg = 'Failed. '. $e->getMessage();
             return response()->json(['msg'=>'Failed. '. $e->getMessage()]);
         }
-        //return response()->json(['msg'=>$msg]);
     }
 }

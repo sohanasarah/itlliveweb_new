@@ -90,7 +90,7 @@
                                                     @foreach ($items as $item)
                                                     @php
                                                         $i++;
-                                                        $qty = Helper::get_qty_by_site($item->pt_part,\Auth::user()->user_name,'LG001');
+                                                        $qty = get_qty_by_site($item->pt_part,\Auth::user()->user_name,'LG001');
                                                         
                                                         if(($qty->qty_avail)!=NULL){
                                                             $avail_qty = $qty->qty_avail;

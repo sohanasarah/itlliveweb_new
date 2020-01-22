@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace ITLLiveWeb\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use ITLLiveWeb\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 

@@ -33,11 +33,14 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "ITLLiveWeb\\": "app/"
         },
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/custom_helpers.php"
         ]
     },
     "autoload-dev": {

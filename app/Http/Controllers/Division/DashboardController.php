@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Division;
+namespace ITLLiveWeb\Http\Controllers\Division;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use ITLLiveWeb\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;

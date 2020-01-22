@@ -32,7 +32,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a href="{{ route('grr')}}" class="nav-link">
+            <a href="{{ route('grr-list')}}" class="nav-link">
                 <i class="nav-icon fas fa-cubes"></i>
                 <p>GRR </p>
             </a>

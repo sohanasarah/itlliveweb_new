@@ -54,9 +54,9 @@ Indent View
                             @foreach ($ind_details as $indd)
 
                             @php
-                            $site = Helper::get_site_desc($indd->indd_shipto);
+                            $site = get_site_desc($indd->indd_shipto);
                             $shipto_desc = $site->si_desc;
-                            $site = Helper::get_site_desc($indd->indd_shipfrom);
+                            $site = get_site_desc($indd->indd_shipfrom);
                             $shipfrom_desc = $site->si_desc;
                             $i++;
                             @endphp

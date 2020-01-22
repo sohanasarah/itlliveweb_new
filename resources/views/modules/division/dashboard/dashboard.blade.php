@@ -205,7 +205,7 @@ Dashboard
                                     <tbody>
                                         @foreach ($cih_ar as $value)
                                         @php
-                                        $site_details = Helper::get_site_desc($value->depot);
+                                        $site_details = get_site_desc($value->depot);
                                         // var_dump($site_details->si_desc);
                                         @endphp
                                         <tr>
