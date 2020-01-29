@@ -57,6 +57,45 @@ Route::group([
         Route::get('grr-view/{do_nbr}', 'Division\GRRController@grr_view')->name('grr-view');
         Route::post('grr-save', 'Division\GRRController@grr_save')->name('grr-save');
     });
+
+    Route::group(['prefix' => 'reports'], function () {
+
+        Route::group(['prefix' => 'sales'], function () {
+            Route::get('salesbySKUbydate', 'Division\SalesReportsController@salesbySKUbydate')->name('salesbySKUbydate');
+            Route::get('salesbydate', 'Division\SalesReportsController@salesbydate')->name('salesbydate');
+            Route::get('salesbySKU', 'Division\SalesReportsController@salesbySKU')->name('salesbySKU');
+            Route::get('salesbycustomer', 'Division\SalesReportsController@salesbycustomer')->name('salesbycustomer');
+            Route::get('salesbyBrand', 'Division\SalesReportsController@salesbyBrand')->name('salesbyBrand');
+        });
+
+        Route::get('remittance', 'Division\ReportsController@remittance')->name('remittance');
+
+        Route::get('collection', 'Division\ReportsController@collection')->name('collection');
+
+        Route::get('expense', 'Division\ReportsController@expense')->name('expense');
+        Route::get('approved_expenses', 'Division\ReportsController@approved_expenses')->name('approved_expenses');
+
+        Route::get('indent', 'Division\ReportsController@indent')->name('indent');
+        Route::get('indent_value', 'Division\ReportsController@indent_value')->name('indent_value');
+
+        Route::get('stn', 'Division\ReportsController@stn')->name('stn');
+        Route::get('doship', 'Division\ReportsController@doship')->name('doship');
+
+        Route::get('cih_by_date', 'Division\ReportsController@cih_by_date')->name('cih_by_date');
+        Route::get('outstanding_by_date', 'Division\ReportsController@outstanding_by_date')->name('outstanding_by_date');
+        Route::get('depot_balance', 'Division\ReportsController@depot_balance')->name('depot_balance');
+
+        Route::get('inventory_report', 'Division\ReportsController@inventory_report')->name('inventory_report');
+        Route::get('stock_reconciliation', 'Division\ReportsController@stock_reconciliation')->name('stock_reconciliation');
+        Route::get('stock_value', 'Division\ReportsController@stock_value')->name('stock_value');
+        Route::get('transaction_details', 'Division\ReportsController@transaction_details')->name('transaction_details');
+
+        
+
+
+
+
+    });
 });
 
 // Route::prefix('division')->group(function () {

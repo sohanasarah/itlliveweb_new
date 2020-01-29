@@ -38,7 +38,7 @@
             </a>
         </li>
 
-        <li class="nav-item has-treeview menu-open">
+        <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-file-invoice"></i>
                 <p>
@@ -49,9 +49,9 @@
             </a>
             <ul class="nav nav-treeview">
                 <li class="nav-item">
-                    <a href="pages/layout/top-nav.html" class="nav-link">
+                    <a href="{{ route('salesbySKUbydate')}}" class="nav-link">
                         <i class="fas fa-shopping-cart nav-icon"></i>
-                        <p>Sales By SKU</p>
+                        <p>Sales By SKU By Date</p>
                     </a>
                 </li>
                 <li class="nav-item">

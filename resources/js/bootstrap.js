@@ -10,15 +10,40 @@ window._ = require('lodash');
 try {
     window.Popper = require('popper.js').default;
     window.$ = window.jQuery = require('jquery');
+    window.JSZip = require("admin-lte/plugins/jszip/jszip.js");
 
     require('bootstrap');
-    require('admin-lte');
-    require('admin-lte/plugins/datatables/jquery.dataTables.js');
-    require('admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js');
-    require('admin-lte/plugins/sweetalert2/sweetalert2.min.js');
-    require('admin-lte/plugins/daterangepicker/daterangepicker.js');
-} catch (e) {
 
+    require("admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.js");
+
+    require("admin-lte/plugins/datatables/jquery.dataTables.min.js");    
+
+    //require('admin-lte/plugins/datatables-buttons/js/dataTables.buttons.js');
+
+    require('admin-lte/plugins/datatables-buttons/js/buttons.bootstrap4.js');
+
+    // require('admin-lte/plugins/jszip/jszip.min.js');
+    // require('admin-lte/plugins/pdfmake/pdfmake.min.js');
+    // require('admin-lte/plugins/pdfmake/vfs_fonts.js');
+
+    require('admin-lte/plugins/datatables-buttons/js/buttons.html5.min.js');
+    require("admin-lte/plugins/datatables-buttons/js/buttons.colVis.min.js");
+    require("admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.js");
+    require("admin-lte/plugins/datatables-select/js/select.bootstrap4.js");
+    
+
+    window.pdfMake = require("pdfmake/build/pdfmake");
+    window.pdfFonts = require("pdfmake/build/vfs_fonts");
+    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+    require("admin-lte");
+
+    require('admin-lte/plugins/sweetalert2/sweetalert2.min.js');
+
+    require('admin-lte/plugins/daterangepicker/daterangepicker.js');
+
+} catch (e) {
+    console.error(e);
 }
 
 /**

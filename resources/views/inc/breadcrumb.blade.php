@@ -5,11 +5,11 @@
     @endphp
     @for($i = 2; $i <= count(Request::segments()); $i++)
         @if($i == count(Request::segments()))
-            <li class="breadcrumb-item active">{{strtoupper(Request::segment($i))}}</li>
+            <li class="breadcrumb-item active">{{ucfirst(Request::segment($i))}}</li>
         @else
             <li class="breadcrumb-item">
                 <a href="">
-                {{strtoupper(Request::segment($i))}}
+                {{ucfirst(Request::segment($i))}}
             </a>
             </li>
         @endif

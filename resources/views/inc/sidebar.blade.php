@@ -9,12 +9,12 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="user-panel mt-0 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('img/profile.png') }}" class="img-circle elevation-2" alt="User Image">
+                <img src="{{ asset('img/profile.png') }}" class="img-circle elevation-4" alt="User Image">
             </div> 
             <div class="info">
-                <a href="#" class="d-block">{{ Auth::user()->user_fullname }}</a>
+                <a href="route('home')" class="d-block">{{Auth::user()->user_fullname}}</a>
             </div>
         </div>
 

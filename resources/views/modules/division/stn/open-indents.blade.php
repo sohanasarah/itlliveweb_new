@@ -128,8 +128,7 @@ Pending Shipments
         $('table tr').each(function(i) {
             status = $(this).find('.status').html();
             ind_status = $.trim(status);
-            console.log(ind_status);
-
+            
             if (ind_status === "Allocated") {
                 $(this).find('.btn-allocate').prop('disabled', true);
                 $(this).find('.btn-stn').prop('disabled', false);
