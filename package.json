@@ -29,7 +29,7 @@
     "datatables.net-buttons": "^1.6.1",
     "datatables.net-buttons-dt": "^1.6.1",
     "daterangepicker": "^3.0.5",
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "pdfmake": "^0.1.63",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^9.7.0"
